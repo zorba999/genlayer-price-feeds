@@ -81,7 +81,9 @@ export function usePrices(contractAddress: string) {
         const readClient = createClient({ chain: testnetBradbury });
         await readClient.waitForTransactionReceipt({
           hash: hash as unknown as `0x${string}` & { length: 66 },
-          status: TransactionStatus.FINALIZED,
+          status: TransactionStatus.ACCEPTED,
+          retries: 60,
+          interval: 5000,
         });
 
         setTxStatus('finalized');

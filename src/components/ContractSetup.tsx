@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Settings, RefreshCw, ExternalLink } from 'lucide-react';
 import { BRADBURY_EXPLORER } from '@/lib/constants';
 
@@ -18,7 +18,14 @@ export default function ContractSetup({
   onRefresh,
 }: ContractSetupProps) {
   const [draft, setDraft] = useState(contractAddress);
-  const [open, setOpen] = useState(!contractAddress || contractAddress === '0x');
+  const [open, setOpen] = useState(true);
+
+  useEffect(() => {
+    if (contractAddress && contractAddress.length > 10) {
+      setDraft(contractAddress);
+      setOpen(false);
+    }
+  }, [contractAddress]);
 
   const handleSave = () => {
     onAddressChange(draft.trim());
