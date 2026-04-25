@@ -10,13 +10,15 @@ import { usePrices } from '@/hooks/usePrices';
 
 export default function Home() {
   const [contractAddress, setContractAddress] = useState('');
+  const [hasMetaMask, setHasMetaMask] = useState(true);
 
   useEffect(() => {
     const env = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS;
     if (env && env !== '0x') setContractAddress(env);
+    setHasMetaMask(!!window.ethereum);
   }, []);
 
-  const { address, isConnecting, connect, disconnect } = useWallet();
+  const { address, isConnecting, error: walletError, connect, disconnect } = useWallet();
 
   const {
     onchainPrices,
@@ -44,9 +46,17 @@ export default function Home() {
       <Header
         walletAddress={address}
         isConnecting={isConnecting}
+        walletError={walletError}
         onConnect={connect}
         onDisconnect={disconnect}
       />
+
+      {!hasMetaMask && (
+        <div className="bg-orange-500/10 border-b border-orange-500/20 px-4 py-2 text-center text-sm text-orange-400">
+          MetaMask ma kaynch — ftah had page f Chrome/Firefox lli 3ndu MetaMask bach tqder t-refresh prices ·{' '}
+          <a href="https://metamask.io/download/" target="_blank" rel="noopener noreferrer" className="underline hover:text-orange-300">Install MetaMask</a>
+        </div>
+      )}
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center mb-12">

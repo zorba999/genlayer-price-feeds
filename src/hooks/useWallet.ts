@@ -1,12 +1,11 @@
 'use client';
 
 import { useState, useCallback, useEffect } from 'react';
-import { createClient } from 'genlayer-js';
-import { testnetBradbury } from 'genlayer-js/chains';
 
 export function useWallet() {
   const [address, setAddress] = useState<string | null>(null);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined' || !window.ethereum) return;
@@ -23,22 +22,20 @@ export function useWallet() {
 
   const connect = useCallback(async () => {
     if (typeof window === 'undefined' || !window.ethereum) {
-      throw new Error('MetaMask not found. Please install it.');
+      setError('MetaMask not found. Please install it.');
+      return;
     }
     setIsConnecting(true);
+    setError(null);
     try {
       const accounts = (await window.ethereum.request({
         method: 'eth_requestAccounts',
       })) as string[];
-
-      const client = createClient({
-        chain: testnetBradbury,
-        account: accounts[0] as `0x${string}`,
-        provider: window.ethereum,
-      });
-      await client.connect('testnetBradbury');
       setAddress(accounts[0]);
       return accounts[0];
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : 'Connection failed';
+      setError(msg);
     } finally {
       setIsConnecting(false);
     }
@@ -52,6 +49,7 @@ export function useWallet() {
     address,
     isConnecting,
     isConnected: !!address,
+    error,
     connect,
     disconnect,
   };

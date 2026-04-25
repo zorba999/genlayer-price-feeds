@@ -5,6 +5,7 @@ import { Wallet, Zap } from 'lucide-react';
 interface HeaderProps {
   walletAddress: string | null;
   isConnecting: boolean;
+  walletError: string | null;
   onConnect: () => void;
   onDisconnect: () => void;
 }
@@ -12,9 +13,11 @@ interface HeaderProps {
 export default function Header({
   walletAddress,
   isConnecting,
+  walletError,
   onConnect,
   onDisconnect,
 }: HeaderProps) {
+  const hasMetaMask = typeof window !== 'undefined' && !!window.ethereum;
   const shortAddress = walletAddress
     ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
     : null;
@@ -46,7 +49,7 @@ export default function Header({
               <Wallet className="w-4 h-4" />
               {shortAddress}
             </button>
-          ) : (
+          ) : hasMetaMask ? (
             <button
               onClick={onConnect}
               disabled={isConnecting}
@@ -55,6 +58,19 @@ export default function Header({
               <Wallet className="w-4 h-4" />
               {isConnecting ? 'Connecting…' : 'Connect Wallet'}
             </button>
+          ) : (
+            <a
+              href="https://metamask.io/download/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 bg-orange-500/20 hover:bg-orange-500/30 border border-orange-500/40 text-orange-400 text-sm px-4 py-2 rounded-lg transition-colors"
+            >
+              <Wallet className="w-4 h-4" />
+              Install MetaMask
+            </a>
+          )}
+          {walletError && (
+            <span className="text-xs text-red-400 max-w-xs truncate">{walletError}</span>
           )}
         </div>
       </div>
