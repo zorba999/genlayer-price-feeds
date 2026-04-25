@@ -6,6 +6,7 @@ interface HeaderProps {
   walletAddress: string | null;
   isConnecting: boolean;
   walletError: string | null;
+  hasMetaMask: boolean;
   onConnect: () => void;
   onDisconnect: () => void;
 }
@@ -14,10 +15,10 @@ export default function Header({
   walletAddress,
   isConnecting,
   walletError,
+  hasMetaMask,
   onConnect,
   onDisconnect,
 }: HeaderProps) {
-  const hasMetaMask = typeof window !== 'undefined' && !!window.ethereum;
   const shortAddress = walletAddress
     ? `${walletAddress.slice(0, 6)}…${walletAddress.slice(-4)}`
     : null;

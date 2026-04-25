@@ -47,6 +47,7 @@ export default function Home() {
         walletAddress={address}
         isConnecting={isConnecting}
         walletError={walletError}
+        hasMetaMask={hasMetaMask}
         onConnect={connect}
         onDisconnect={disconnect}
       />
